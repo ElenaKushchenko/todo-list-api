@@ -166,7 +166,7 @@ class ProjectControllerTest {
             tasks = listOf(task1, task2, task3)
         )
 
-        whenever(service.create(project)).thenReturn(project)
+//        whenever(service.create(project)).thenReturn(project)
 
         mockMvc.perform(
             post(BASE_URL)
@@ -196,7 +196,7 @@ class ProjectControllerTest {
             tasks = listOf(task1, task2, task3)
         )
 
-        whenever(service.update(project)).thenReturn(project)
+//        whenever(service.update(project)).thenReturn(project)
 
         mockMvc.perform(
             put("$BASE_URL/{id}", projectId)

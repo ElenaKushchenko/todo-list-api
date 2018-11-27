@@ -26,14 +26,15 @@ class ProjectController(private val service: ProjectService) {
     }
 
     @GetMapping
-    fun getAll(): List<ShortProject> =
-        service.getAll()
+    fun getAll(@RequestParam(value = "sortBy", required = false, defaultValue = "order") sortBy: String,
+               @RequestParam(value = "dir", required = false, defaultValue = "ASC") dir: String): List<ShortProject> =
+        service.getAll(sortBy, dir)
 
     @GetMapping("/paged")
     fun getPaged(
         @RequestParam(value = "page", required = false, defaultValue = "1") page: Int,
         @RequestParam(value = "size", required = false, defaultValue = "20") size: Int,
-        @RequestParam(value = "sortBy", required = false, defaultValue = "name") sortBy: String,
+        @RequestParam(value = "sortBy", required = false, defaultValue = "order") sortBy: String,
         @RequestParam(value = "dir", required = false, defaultValue = "ASC") dir: String
     ): Page<Project> =
         service.getPaged(page, size, sortBy, dir)
@@ -43,17 +44,18 @@ class ProjectController(private val service: ProjectService) {
         service.get(id)
 
     @PostMapping
-    fun create(@RequestBody project: Project): Project =
+    fun create(@RequestBody project: Project): String =
         service.create(project)
 
+    @PutMapping
+    fun updateAll(@RequestBody projects: List<ShortProject>) =
+        service.update(projects)
+
     @PutMapping("/{id}")
-    fun update(
-        @PathVariable("id") id: String,
-        @RequestBody project: Project
-    ): Project =
+    fun update(@PathVariable("id") id: String, @RequestBody project: Project) =
         service.update(project.copy(id = id))
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable("id") id: String) =
+    fun delete(@PathVariable("id") id: String): Unit =
         service.delete(id)
 }

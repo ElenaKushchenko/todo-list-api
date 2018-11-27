@@ -1,5 +1,6 @@
 package ru.otus.spring.kushchenko.todolist.repository
 
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import ru.otus.spring.kushchenko.todolist.model.Project
@@ -10,5 +11,5 @@ import ru.otus.spring.kushchenko.todolist.model.ShortProject
  */
 interface ProjectRepository : MongoRepository<Project, String> {
     @Query("{}")
-    fun findAllShortProjects(): List<ShortProject>
+    fun findAllShortProjects(sort: Sort): List<ShortProject>
 }

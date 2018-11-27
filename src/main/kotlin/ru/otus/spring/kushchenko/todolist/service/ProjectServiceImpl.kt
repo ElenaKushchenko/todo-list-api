@@ -16,7 +16,11 @@ import ru.otus.spring.kushchenko.todolist.repository.ProjectRepository
 class ProjectServiceImpl(private val projectRepository: ProjectRepository) : ProjectService {
     private val log = LoggerFactory.getLogger(ProjectServiceImpl::class.java)
 
-    override fun getAll(): List<ShortProject> = projectRepository.findAllShortProjects()
+    override fun getAll(sortBy: String, dir: String): List<ShortProject> {
+        val sort = Sort(Sort.Direction.valueOf(dir), sortBy)
+
+        return projectRepository.findAllShortProjects(sort)
+    }
 
     override fun getPaged(page: Int, size: Int, sortBy: String, dir: String): Page<Project> {
         val pageable = PageRequest.of(
@@ -31,22 +35,33 @@ class ProjectServiceImpl(private val projectRepository: ProjectRepository) : Pro
     override fun get(id: String): Project = projectRepository.findById(id)
         .orElseThrow { IllegalArgumentException("Project with id = $id not found") }
 
-    override fun create(project: Project): Project {
+    override fun create(project: Project): String {
         project.id?.let {
             if (projectRepository.existsById(it))
                 throw IllegalArgumentException("Project with id = $it already exists")
         }
 
-        return projectRepository.save(project)
+        return projectRepository.save(project).id!!
     }
 
-    override fun update(project: Project): Project {
+    override fun update(projects: List<ShortProject>) {
+        val updated = projects.map {
+            get(it.id)
+                .copy(
+                    name = it.name,
+                    order = it.order
+                )
+        }
+        projectRepository.saveAll(updated)
+    }
+
+    override fun update(project: Project) {
         val id = project.id!!
 
         if (projectRepository.existsById(id).not())
             throw IllegalArgumentException("Project with id = $id not found")
 
-        return projectRepository.save(project)
+        projectRepository.save(project)
     }
 
     override fun delete(id: String) = projectRepository.deleteById(id)
