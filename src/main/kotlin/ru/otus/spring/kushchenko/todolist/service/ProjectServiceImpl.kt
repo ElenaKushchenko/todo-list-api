@@ -13,13 +13,13 @@ import ru.otus.spring.kushchenko.todolist.repository.ProjectRepository
  * Created by Elena on Nov, 2018
  */
 @Service
-class ProjectServiceImpl(private val projectRepository: ProjectRepository) : ProjectService {
+class ProjectServiceImpl(private val repository: ProjectRepository) : ProjectService {
     private val log = LoggerFactory.getLogger(ProjectServiceImpl::class.java)
 
     override fun getAll(sortBy: String, dir: String): List<ShortProject> {
         val sort = Sort(Sort.Direction.valueOf(dir), sortBy)
 
-        return projectRepository.findAllShortProjects(sort)
+        return repository.findAllShortProjects(sort)
     }
 
     override fun getPaged(page: Int, size: Int, sortBy: String, dir: String): Page<Project> {
@@ -29,40 +29,48 @@ class ProjectServiceImpl(private val projectRepository: ProjectRepository) : Pro
             Sort(Sort.Direction.valueOf(dir), sortBy)
         )
 
-        return projectRepository.findAll(pageable)
+        return repository.findAll(pageable)
     }
 
-    override fun get(id: String): Project = projectRepository.findById(id)
+    override fun get(id: String): Project = repository.findById(id)
         .orElseThrow { IllegalArgumentException("Project with id = $id not found") }
 
     override fun create(project: Project): String {
         project.id?.let {
-            if (projectRepository.existsById(it))
+            if (repository.existsById(it))
                 throw IllegalArgumentException("Project with id = $it already exists")
         }
 
-        return projectRepository.save(project).id!!
+        return repository.save(project).id!!
     }
 
     override fun update(projects: List<ShortProject>) {
+        val idsToUpdate = projects.map { it.id }
+        val toUpdate = repository.findAllById(idsToUpdate).associateBy { it.id }
+
+        if (idsToUpdate.size > toUpdate.size) {
+            val missedIds = idsToUpdate.minus(toUpdate.keys)
+            throw IllegalArgumentException("Projects with ids = $missedIds not found")
+        }
+
         val updated = projects.map {
-            get(it.id)
+            toUpdate[it.id]!!
                 .copy(
                     name = it.name,
                     order = it.order
                 )
         }
-        projectRepository.saveAll(updated)
+        repository.saveAll(updated)
     }
 
     override fun update(project: Project) {
         val id = project.id!!
 
-        if (projectRepository.existsById(id).not())
+        if (repository.existsById(id).not())
             throw IllegalArgumentException("Project with id = $id not found")
 
-        projectRepository.save(project)
+        repository.save(project)
     }
 
-    override fun delete(id: String) = projectRepository.deleteById(id)
+    override fun delete(id: String) = repository.deleteById(id)
 }
