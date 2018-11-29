@@ -22,12 +22,11 @@ class UserDetailsServiceImpl(private val userRepository: UserRepository) : UserD
     }
 
     private fun User.toUserDetails() =
-        CustomUserDetails(
+        UserDetailsImpl(
             this.id!!,
             this.username,
             this.password,
             this.roles.map { authority -> SimpleGrantedAuthority(authority.name) },
-            this.enabled,
-            this.lastPasswordReset
+            this.enabled
         )
 }

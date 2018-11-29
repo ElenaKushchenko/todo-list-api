@@ -44,14 +44,11 @@ class AuthorizationFilter(
             } catch (e: ExpiredJwtException) {
                 log.warn("Token is expired", e)
             }
-        } else {
-            log.warn("Couldn't find bearer auth")
         }
 
         if (username != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = this.userDetailsService.loadUserByUsername(username)
-
-            if (jwtTokenProcessor.validateToken(token!!, userDetails)) {
+            if (jwtTokenProcessor.validateToken(token!!)) {
+                val userDetails = this.userDetailsService.loadUserByUsername(username)
                 val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 
