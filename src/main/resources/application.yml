@@ -14,3 +14,8 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://otus-spring:12345@sandbox-cg92x.mongodb.net/todo-list?retryWrites=true
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 604800

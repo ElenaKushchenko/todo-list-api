@@ -29,7 +29,8 @@ class UserController(private val service: UserService) {
 
     @PutMapping("/{id}")
     fun update(@PathVariable("id") id: String,
-               @RequestBody user: User) {
+               @RequestBody user: User
+    ) {
         service.update(user.copy(id = id))
     }
 
