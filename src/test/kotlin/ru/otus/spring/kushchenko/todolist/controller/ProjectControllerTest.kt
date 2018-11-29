@@ -69,7 +69,11 @@ class ProjectControllerTest {
 
         whenever(service.getAll(sortBy, dir)).thenReturn(projects)
 
-        mockMvc.perform(get(BASE_URL))
+        mockMvc.perform(
+            get(BASE_URL)
+                .param("sortBy", sortBy)
+                .param("dir", dir)
+        )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().json(projects.asJsonString()))
