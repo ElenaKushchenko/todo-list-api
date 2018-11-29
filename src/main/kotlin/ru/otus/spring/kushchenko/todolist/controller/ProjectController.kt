@@ -48,7 +48,7 @@ class ProjectController(private val service: ProjectService) {
         service.create(project)
 
     @PutMapping
-    fun updateAll(@RequestBody projects: List<ShortProject>) =
+    fun updateAll(@RequestBody projects: List<Project>) =
         service.update(projects)
 
     @PutMapping("/{id}")

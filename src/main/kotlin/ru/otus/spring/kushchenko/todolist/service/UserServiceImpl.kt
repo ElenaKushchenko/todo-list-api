@@ -18,22 +18,22 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
     override fun get(id: String): User = repository.findById(id)
         .orElseThrow { IllegalArgumentException("User with id = $id not found") }
 
-    override fun create(user: User): User {
+    override fun create(user: User): String {
         user.id?.let {
             if (repository.existsById(it))
                 throw IllegalArgumentException("User with id = $it already exists")
         }
 
-        return repository.save(user)
+        return repository.save(user).id!!
     }
 
-    override fun update(user: User): User {
+    override fun update(user: User) {
         val id = user.id!!
 
         if (repository.existsById(id).not())
             throw IllegalArgumentException("User with id = $id not found")
 
-        return repository.save(user)
+        repository.save(user)
     }
 
     override fun delete(id: String) = repository.deleteById(id)

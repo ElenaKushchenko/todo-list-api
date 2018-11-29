@@ -29,7 +29,7 @@ import ru.otus.spring.kushchenko.todolist.model.Task
 import ru.otus.spring.kushchenko.todolist.model.TaskStatus
 import ru.otus.spring.kushchenko.todolist.service.ProjectService
 import ru.otus.spring.kushchenko.todolist.util.Util.asJsonString
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * Created by Elena on Nov, 2018
@@ -51,6 +51,9 @@ class ProjectControllerTest {
 
     @Test
     fun getAll() {
+        val sortBy = "name"
+        val dir = "ASC"
+
         val projects = listOf(
             ShortProject(
                 id = "1",
@@ -64,7 +67,7 @@ class ProjectControllerTest {
             )
         )
 
-        whenever(service.getAll()).thenReturn(projects)
+        whenever(service.getAll(sortBy, dir)).thenReturn(projects)
 
         mockMvc.perform(get(BASE_URL))
             .andExpect(status().isOk)
@@ -72,7 +75,7 @@ class ProjectControllerTest {
             .andExpect(content().json(projects.asJsonString()))
             .andReturn().response
 
-        verify(service).getAll()
+        verify(service).getAll(sortBy, dir)
         verifyNoMoreInteractions(service)
     }
 
@@ -89,9 +92,9 @@ class ProjectControllerTest {
             Sort(Sort.Direction.valueOf(dir), sortBy)
         )
 
-        val task1 = Task("Text1", LocalDate.now(), TaskStatus.TO_DO, 1)
-        val task2 = Task("Text2", LocalDate.now(), TaskStatus.IN_PROGRESS, 2)
-        val task3 = Task("Text3", LocalDate.now(), TaskStatus.DONE, 3)
+        val task1 = Task("Text1", LocalDateTime.now().withNano(0), TaskStatus.TO_DO, 1)
+        val task2 = Task("Text2", LocalDateTime.now().withNano(0), TaskStatus.IN_PROGRESS, 2)
+        val task3 = Task("Text3", LocalDateTime.now().withNano(0), TaskStatus.DONE, 3)
 
         val projects = listOf(
             Project(
@@ -129,9 +132,9 @@ class ProjectControllerTest {
 
     @Test
     fun get() {
-        val task1 = Task("Text1", LocalDate.now(), TaskStatus.TO_DO, 1)
-        val task2 = Task("Text2", LocalDate.now(), TaskStatus.IN_PROGRESS, 2)
-        val task3 = Task("Text3", LocalDate.now(), TaskStatus.DONE, 3)
+        val task1 = Task("Text1", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.TO_DO, 1)
+        val task2 = Task("Text2", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.IN_PROGRESS, 2)
+        val task3 = Task("Text3", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.DONE, 3)
 
         val projectId = "1"
         val project = Project(
@@ -155,38 +158,9 @@ class ProjectControllerTest {
 
     @Test
     fun create() {
-        val task1 = Task("Text1", LocalDate.now(), TaskStatus.TO_DO, 1)
-        val task2 = Task("Text2", LocalDate.now(), TaskStatus.IN_PROGRESS, 2)
-        val task3 = Task("Text3", LocalDate.now(), TaskStatus.DONE, 3)
-
-        val project = Project(
-            id = "1",
-            name = "Project1",
-            order = 1,
-            tasks = listOf(task1, task2, task3)
-        )
-
-//        whenever(service.create(project)).thenReturn(project)
-
-        mockMvc.perform(
-            post(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(project.asJsonString())
-        ).andDo(::print)
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().json(project.asJsonString()))
-            .andReturn().response
-
-        verify(service).create(project)
-        verifyNoMoreInteractions(service)
-    }
-
-    @Test
-    fun update() {
-        val task1 = Task("Text1", LocalDate.now(), TaskStatus.TO_DO, 1)
-        val task2 = Task("Text2", LocalDate.now(), TaskStatus.IN_PROGRESS, 2)
-        val task3 = Task("Text3", LocalDate.now(), TaskStatus.DONE, 3)
+        val task1 = Task("Text1", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.TO_DO, 1)
+        val task2 = Task("Text2", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.IN_PROGRESS, 2)
+        val task3 = Task("Text3", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.DONE, 3)
 
         val projectId = "1"
         val project = Project(
@@ -196,7 +170,70 @@ class ProjectControllerTest {
             tasks = listOf(task1, task2, task3)
         )
 
-//        whenever(service.update(project)).thenReturn(project)
+        whenever(service.create(project)).thenReturn(projectId)
+
+        mockMvc.perform(
+            post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(project.asJsonString())
+        ).andDo(::print)
+            .andExpect(status().isOk)
+            .andExpect(content().string(projectId))
+            .andReturn().response
+
+        verify(service).create(project)
+        verifyNoMoreInteractions(service)
+    }
+
+    @Test
+    fun updateAll() {
+        val task1 = Task("Text1", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.TO_DO, 1)
+        val task2 = Task("Text2", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.IN_PROGRESS, 2)
+        val task3 = Task("Text3", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.DONE, 3)
+
+        val projects = listOf(
+            Project(
+                id = "1",
+                name = "Project1",
+                order = 1,
+                tasks = listOf(task1, task2, task3)
+            ),
+            Project(
+                id = "2",
+                name = "Project2",
+                order = 2,
+                tasks = listOf(task1, task2, task3)
+            )
+        )
+
+        doNothing().whenever(service).update(projects)
+
+        mockMvc.perform(
+            put(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(projects.asJsonString())
+        ).andDo(::print)
+            .andExpect(status().isOk)
+
+        verify(service).update(projects)
+        verifyNoMoreInteractions(service)
+    }
+
+    @Test
+    fun update() {
+        val task1 = Task("Text1", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.TO_DO, 1)
+        val task2 = Task("Text2", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.IN_PROGRESS, 2)
+        val task3 = Task("Text3", LocalDateTime.now().withSecond(0).withNano(0), TaskStatus.DONE, 3)
+
+        val projectId = "1"
+        val project = Project(
+            id = projectId,
+            name = "Project1",
+            order = 1,
+            tasks = listOf(task1, task2, task3)
+        )
+
+        doNothing().whenever(service).update(project)
 
         mockMvc.perform(
             put("$BASE_URL/{id}", projectId)
@@ -204,9 +241,6 @@ class ProjectControllerTest {
                 .content(project.asJsonString())
         ).andDo(::print)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().json(project.asJsonString()))
-            .andReturn().response
 
         verify(service).update(project)
         verifyNoMoreInteractions(service)

@@ -44,7 +44,7 @@ class ProjectServiceImpl(private val repository: ProjectRepository) : ProjectSer
         return repository.save(project).id!!
     }
 
-    override fun update(projects: List<ShortProject>) {
+    override fun update(projects: List<Project>) {
         val idsToUpdate = projects.map { it.id }
         val toUpdate = repository.findAllById(idsToUpdate).associateBy { it.id }
 

@@ -8,7 +8,7 @@ import ru.otus.spring.kushchenko.todolist.model.User
 interface UserService {
     fun getAll(): List<User>
     fun get(id: String): User
-    fun create(user: User): User
-    fun update(user: User): User
+    fun create(user: User): String
+    fun update(user: User)
     fun delete(id: String)
 }

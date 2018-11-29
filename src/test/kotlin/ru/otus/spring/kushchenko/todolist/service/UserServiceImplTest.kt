@@ -82,7 +82,7 @@ class UserServiceImplTest {
             whenever(repository.existsById(userId)).thenReturn(false)
             whenever(repository.save(user)).thenReturn(user)
 
-            assertEquals(user, service.create(user))
+            assertEquals(user.id, service.create(user))
 
             verify(repository).existsById(userId)
             verify(repository).save(user)
@@ -105,7 +105,7 @@ class UserServiceImplTest {
     }
 
     @Nested
-    @DisplayName("Tests for update() method")
+    @DisplayName("Tests for updateAll() method")
     inner class Update {
 
         @Test
@@ -116,7 +116,7 @@ class UserServiceImplTest {
             whenever(repository.existsById(userId)).thenReturn(true)
             whenever(repository.save(user)).thenReturn(user)
 
-            assertEquals(user, service.update(user))
+            service.update(user)
 
             verify(repository).existsById(userId)
             verify(repository).save(user)

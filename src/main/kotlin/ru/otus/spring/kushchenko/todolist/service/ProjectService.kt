@@ -12,7 +12,7 @@ interface ProjectService {
     fun getPaged(page: Int, size: Int, sortBy: String, dir: String): Page<Project>
     fun get(id: String): Project
     fun create(project: Project): String
-    fun update(projects: List<ShortProject>)
+    fun update(projects: List<Project>)
     fun update(project: Project)
     fun delete(id: String)
 }

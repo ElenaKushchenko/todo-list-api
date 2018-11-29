@@ -24,13 +24,14 @@ class UserController(private val service: UserService) {
         service.get(id)
 
     @PostMapping
-    fun create(@RequestBody user: User): User =
+    fun create(@RequestBody user: User): String =
         service.create(user)
 
     @PutMapping("/{id}")
     fun update(@PathVariable("id") id: String,
-               @RequestBody user: User): User =
+               @RequestBody user: User) {
         service.update(user.copy(id = id))
+    }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable("id") id: String) =

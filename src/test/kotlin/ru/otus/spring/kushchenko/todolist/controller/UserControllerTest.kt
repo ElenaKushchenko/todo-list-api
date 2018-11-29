@@ -78,9 +78,10 @@ class UserControllerTest {
 
     @Test
     fun create() {
-        val user = User("1", "User1")
+        val userId = "1"
+        val user = User(userId, "User1")
 
-        whenever(service.create(user)).thenReturn(user)
+        whenever(service.create(user)).thenReturn(userId)
 
         mockMvc.perform(
             post(BASE_URL)
@@ -88,8 +89,7 @@ class UserControllerTest {
                 .content(user.asJsonString())
         ).andDo(::print)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().json(user.asJsonString()))
+            .andExpect(content().string(userId))
             .andReturn().response
 
         verify(service).create(user)
@@ -101,7 +101,7 @@ class UserControllerTest {
         val userId = "1"
         val user = User(userId, "User1")
 
-        whenever(service.update(user)).thenReturn(user)
+        doNothing().whenever(service).update(user)
 
         mockMvc.perform(
             put("$BASE_URL/{id}", userId)
@@ -109,9 +109,6 @@ class UserControllerTest {
                 .content(user.asJsonString())
         ).andDo(::print)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().json(user.asJsonString()))
-            .andReturn().response
 
         verify(service).update(user)
         verifyNoMoreInteractions(service)
