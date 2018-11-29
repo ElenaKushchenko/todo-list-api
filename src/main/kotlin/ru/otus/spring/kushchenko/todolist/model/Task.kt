@@ -8,7 +8,7 @@ import java.time.LocalDateTime
  */
 data class Task(
     val text: String,
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     val deadline: LocalDateTime?,
     val status: TaskStatus,
     val order: Int
