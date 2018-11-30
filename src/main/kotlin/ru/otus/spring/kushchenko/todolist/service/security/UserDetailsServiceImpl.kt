@@ -26,7 +26,7 @@ class UserDetailsServiceImpl(private val userRepository: UserRepository) : UserD
             this.id!!,
             this.username,
             this.password,
-            this.roles.map { authority -> SimpleGrantedAuthority(authority.name) },
-            this.enabled
+            this.roles?.map { authority -> SimpleGrantedAuthority(authority.name) } ?: emptyList(),
+            this.enabled!!
         )
 }

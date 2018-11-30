@@ -17,8 +17,8 @@ import ru.otus.spring.kushchenko.todolist.controller.security.AuthorizationFilte
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig(private val authenticationFilter: AuthorizationFilter) : WebSecurityConfigurerAdapter() {
+@EnableGlobalMethodSecurity(securedEnabled = true)
+class WebSecurityAdapterConfig(private val authenticationFilter: AuthorizationFilter) : WebSecurityConfigurerAdapter() {
 
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity

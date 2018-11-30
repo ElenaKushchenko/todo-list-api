@@ -16,6 +16,7 @@ data class User(
     val username: String,
     @get:JsonIgnore
     val password: String,
-    val roles: List<Role>,
-    val enabled: Boolean
+    val email: String,
+    val roles: List<Role>? = listOf(Role.USER),
+    val enabled: Boolean? = true
 )

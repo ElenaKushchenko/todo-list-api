@@ -1,6 +1,7 @@
 package ru.otus.spring.kushchenko.todolist.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import ru.otus.spring.kushchenko.todolist.model.User
 import ru.otus.spring.kushchenko.todolist.repository.UserRepository

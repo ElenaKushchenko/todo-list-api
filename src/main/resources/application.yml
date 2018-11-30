@@ -17,5 +17,5 @@ spring:
 
 jwt:
   header: Authorization
-  secret: mySecret
-  expiration: 604800
+  secret: todoListSecret
+  expiration: 604800          # 1 week

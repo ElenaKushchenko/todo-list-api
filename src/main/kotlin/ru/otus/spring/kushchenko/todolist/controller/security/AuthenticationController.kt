@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import ru.otus.spring.kushchenko.todolist.model.User
+import ru.otus.spring.kushchenko.todolist.service.UserService
 import ru.otus.spring.kushchenko.todolist.service.security.UserDetailsImpl
 import ru.otus.spring.kushchenko.todolist.service.security.JwtTokenProcessor
 import javax.servlet.http.HttpServletRequest
@@ -18,7 +21,8 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 class AuthenticationController(
     private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProcessor: JwtTokenProcessor
+    private val jwtTokenProcessor: JwtTokenProcessor,
+    private val userService: UserService
 ) {
     private val AUTH_TYPE = "Bearer "
     @Value("\${jwt.header}")
@@ -41,5 +45,13 @@ class AuthenticationController(
         } else {
             null
         }
+    }
+
+    @PostMapping("/register")
+    fun registerUser(@RequestBody user: User): String {
+        val decryptedUser = user.copy(
+            password = BCryptPasswordEncoder().encode(user.password)
+        )
+        return userService.create(decryptedUser)
     }
 }
