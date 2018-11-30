@@ -1,6 +1,7 @@
 package ru.otus.spring.kushchenko.todolist.service
 
 import org.springframework.data.domain.Page
+import org.springframework.security.access.annotation.Secured
 import ru.otus.spring.kushchenko.todolist.model.Project
 import ru.otus.spring.kushchenko.todolist.model.ShortProject
 

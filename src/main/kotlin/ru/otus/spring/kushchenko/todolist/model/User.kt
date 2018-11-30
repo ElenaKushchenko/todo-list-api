@@ -12,5 +12,9 @@ data class User(
     @Id
     val id: String? = null,
     @Indexed(unique = true)
-    val login: String
+    val username: String,
+    val password: String,
+    val email: String,
+    val roles: List<Role>? = listOf(Role.USER),
+    val enabled: Boolean? = true
 )

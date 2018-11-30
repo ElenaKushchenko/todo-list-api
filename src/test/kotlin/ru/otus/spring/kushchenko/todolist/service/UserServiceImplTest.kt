@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import ru.otus.spring.kushchenko.todolist.model.Role
 import ru.otus.spring.kushchenko.todolist.model.User
 import ru.otus.spring.kushchenko.todolist.repository.UserRepository
 import java.lang.IllegalArgumentException
@@ -27,8 +28,8 @@ class UserServiceImplTest {
     @Test
     fun getAll() {
         val users = listOf(
-            User("1", "Reader1"),
-            User("2", "Reader2")
+            User("1", "Reader1", "password", "email", listOf(Role.USER), true),
+            User("2", "Reader2", "password", "email", listOf(Role.USER), true)
         )
 
         whenever(repository.findAll()).thenReturn(users)
@@ -46,7 +47,7 @@ class UserServiceImplTest {
         @Test
         fun shouldPassSuccessfully() {
             val userId = "1"
-            val user = User(userId, "Reader1")
+            val user = User(userId, "Reader1", "password", "email", listOf(Role.USER), true)
 
             whenever(repository.findById(userId)).thenReturn(Optional.of(user))
 
@@ -77,7 +78,7 @@ class UserServiceImplTest {
         @Test
         fun shouldPassSuccessfully() {
             val userId = "1"
-            val user = User(userId, "Reader1")
+            val user = User(userId, "Reader1", "password", "email", listOf(Role.USER), true)
 
             whenever(repository.existsById(userId)).thenReturn(false)
             whenever(repository.save(user)).thenReturn(user)
@@ -92,7 +93,7 @@ class UserServiceImplTest {
         @Test
         fun shouldFailBecauseUserAlreadyExists() {
             val userId = "1"
-            val user = User(userId, "Reader1")
+            val user = User(userId, "Reader1", "password", "email", listOf(Role.USER), true)
 
             whenever(repository.existsById(userId)).thenReturn(true)
 
@@ -111,7 +112,7 @@ class UserServiceImplTest {
         @Test
         fun shouldPassSuccessfully() {
             val userId = "1"
-            val user = User(userId, "Reader1")
+            val user = User(userId, "Reader1", "password", "email", listOf(Role.USER), true)
 
             whenever(repository.existsById(userId)).thenReturn(true)
             whenever(repository.save(user)).thenReturn(user)
@@ -126,7 +127,7 @@ class UserServiceImplTest {
         @Test
         fun shouldFailBecauseUserDoesNotExist() {
             val userId = "1"
-            val user = User(userId, "Reader1")
+            val user = User(userId, "Reader1", "password", "email", listOf(Role.USER), true)
 
             whenever(repository.existsById(userId)).thenReturn(false)
 
@@ -139,7 +140,7 @@ class UserServiceImplTest {
 
         @Test
         fun shouldFailBecauseUserIdNotSpecified() {
-            val user = User(null, "Reader1")
+            val user = User(null, "Reader1", "password", "email", listOf(Role.USER), true)
 
             Assertions.assertThatThrownBy { service.update(user) }
                 .isInstanceOf(NullPointerException::class.java)
