@@ -1,6 +1,5 @@
 package ru.otus.spring.kushchenko.todolist.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
@@ -14,7 +13,6 @@ data class User(
     val id: String? = null,
     @Indexed(unique = true)
     val username: String,
-    @get:JsonIgnore
     val password: String,
     val email: String,
     val roles: List<Role>? = listOf(Role.USER),

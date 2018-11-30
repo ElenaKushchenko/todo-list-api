@@ -27,6 +27,7 @@ class WebSecurityAdapterConfig(private val authenticationFilter: AuthorizationFi
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
             .antMatchers("/auth/**").permitAll()
+            .antMatchers("/register/**").permitAll()
             .anyRequest().authenticated()
     }
 
@@ -34,6 +35,7 @@ class WebSecurityAdapterConfig(private val authenticationFilter: AuthorizationFi
         web
             .ignoring()
             .antMatchers(HttpMethod.POST, "/auth")
+            .antMatchers(HttpMethod.POST, "/register")
             .antMatchers(
                 "/v2/api-docs",
                 "/swagger-resources/**",
